@@ -7,7 +7,7 @@ class Category(models.Model):
     slug = models.SlugField(max_length=100, unique=True)
 
     class Meta:
-        ordering = ['name']
+        ordering = ('name', )
         verbose_name = 'Категория'
         verbose_name_plural = 'Категории'
 
@@ -15,4 +15,19 @@ class Category(models.Model):
         return self.name
 
 
- 
+class Product(models.Model):
+    category = models.ForeignKey(Category, related_name='products', 
+                                on_delete=models.CASCADE)
+    
+    name = models.CharField(max_length=100, db_index=True)
+    slug = models.SlugField(max_length=100, unique=True)
+
+    image = models.ImageField(upload_to='products/%Y/%m/%d', blank=True)
+    description = models.TextField(blank=True, max_length=1000)
+    price = models.DecimalField(max_digits=10, decimal_places=2)
+    avalible = models.BooleanField(default=True)
+    created_at = models.TimeField(auto_now_add=True)
+    updated_at = models.TimeField(auto_now=True)
+
+    class Meta:
+        ordering = ('name', )
